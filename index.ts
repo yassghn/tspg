@@ -2,9 +2,14 @@
  * index.ts
  */
 
-// put things together from ground
+import ground from 'ground'
+
 (function () {
 
-	console.log('index.ts: unimplemented')
+	const argv = Bun.argv[2]
+
+	if (argv) {
+		ground(argv)
+	}
 
 })()
