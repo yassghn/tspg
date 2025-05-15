@@ -1,5 +1,5 @@
 {
-    "include": ["./ground/**/*", "./play/**/*"],
+    "include": ["./ground/**/*", "./play/**/*", "./index.ts"],
 
     "compilerOptions": {
         // environment setup & latest features
