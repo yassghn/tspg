@@ -3,7 +3,7 @@
  */
 
 function theBasics() {
-	console.log('the basics')
+	Bun.write(Bun.stdout, 'the basics\n')
 }
 
 export { theBasics }
