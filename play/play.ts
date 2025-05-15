@@ -4,8 +4,19 @@
  * place of experimenotation
  */
 
-(function () {
+import api from './experimenotation/api'
+import scratchpad from './experimenotation/scratchpad'
 
-	console.log('play.ts: unimplemented')
+function _play() {
+	const play = {
+		api: api,
+		scratchpad: scratchpad
+	}
+	return play
+}
 
-})()
+function play() {
+	return _play()
+}
+
+export default play
