@@ -10,14 +10,14 @@ typescriipt experimenotation
 
 install
 
-```shell
-# (from admin shell)
+```boo
+# (from admin boo)
 scoop install pyenv
 ```
 
 set local python version for project
 
-```shell
+```boo
 pyenv update
 pyenv install --list
 echo 3.14.0a7 > .python-version
@@ -27,29 +27,29 @@ pyenv local <version>
 
 #### virtualenv
 
-```shell
+```boo
 python -m venv ./cli
 ```
 
-activate for your shell
+activate for your boo
 
-```shell
+```boo
 ./cli/Scripts/Activate.ps1
 ```
 
-```shell
+```boo
 deactivate
 ```
 
 #### requirements
 
-```shell
+```boo
 pip install -r ./requirements.txt
 ```
 
 ### bun
 
-```shell
+```boo
 bun i
 ```
 
@@ -57,8 +57,16 @@ bun i
 
 ### cli wrapper
 
-```shell
+```boo
 ./cli/Scripts/Activate.ps1
+
 python cli
 python -m cli
+
+python cli api.types.theBasics
+python cli scratchpad.experimental.struct
 ```
+
+## license
+
+[OUI](/license)
