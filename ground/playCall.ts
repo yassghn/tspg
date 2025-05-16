@@ -2,6 +2,8 @@
  * playCall.ts
  */
 
+import play from '../play/play'
+
 type playCall = {
 	toString: () => string
 	base: string
@@ -9,9 +11,46 @@ type playCall = {
 	function: string
 }
 
+type playCallFunction = (...params: any) => any
+
 function _getPlayCallArray(call: string): string[] {
 	const playCallArray = call.split('.')
 	return playCallArray
+}
+
+function _playCallSyntaxErrorMsg(pc: playCall, name: string): string {
+	const msg = `invalid ${name} string from: ${pc.toString()}`
+	return msg
+}
+
+function _getObjFromIndex(obj: object, name: string): playCallFunction {
+	const index = Object.keys(obj).indexOf(name)
+	const val = Object.values(obj)[index]
+	return val
+}
+
+function _getPlayCallFunction(pc: playCall) {
+	const p = play()
+
+	const base = _getObjFromIndex(p, pc.base)
+	if (!base) {
+		const err = _playCallSyntaxErrorMsg(pc, 'base')
+		throw new SyntaxError(err)
+	}
+
+	const module = _getObjFromIndex(base, pc.module)
+	if (!module) {
+		const err = _playCallSyntaxErrorMsg(pc, 'module')
+		throw new SyntaxError(err)
+	}
+
+	const f = _getObjFromIndex(module, pc.function)
+	if (!f) {
+		const err = _playCallSyntaxErrorMsg(pc, 'function')
+		throw new SyntaxError(err)
+	}
+
+	return f
 }
 
 function _isValidPlayCall(pcA: string[]): boolean {
@@ -48,14 +87,15 @@ function _hewPlayCall(call: string): playCall {
 	}
 }
 
-function _playCall(call: string): playCall {
+function _runPlayCall(call: string): any {
 	const pc = _hewPlayCall(call)
-	return pc
+	const fn = _getPlayCallFunction(pc)
+	const ret = fn()
+	return ret
 }
 
-function playCall(call: string): playCall {
-	const pc = _playCall(call)
-	return pc
+function runPlayCall(call: string): any {
+	return _runPlayCall(call)
 }
 
-export default playCall
+export default runPlayCall
