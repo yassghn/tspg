@@ -23,7 +23,7 @@ function _playCallSyntaxErrorMsg(pc: playCall, name: string): string {
 	return msg
 }
 
-function _getObjFromIndex(obj: object, name: string): playCallFunction {
+function _getObjValueFromName(obj: object, name: string): playCallFunction {
 	const index = Object.keys(obj).indexOf(name)
 	const val = Object.values(obj)[index]
 	return val
@@ -32,19 +32,19 @@ function _getObjFromIndex(obj: object, name: string): playCallFunction {
 function _getPlayCallFunction(pc: playCall) {
 	const p = play()
 
-	const base = _getObjFromIndex(p, pc.base)
+	const base = _getObjValueFromName(p, pc.base)
 	if (!base) {
 		const err = _playCallSyntaxErrorMsg(pc, 'base')
 		throw new SyntaxError(err)
 	}
 
-	const module = _getObjFromIndex(base, pc.module)
+	const module = _getObjValueFromName(base, pc.module)
 	if (!module) {
 		const err = _playCallSyntaxErrorMsg(pc, 'module')
 		throw new SyntaxError(err)
 	}
 
-	const f = _getObjFromIndex(module, pc.function)
+	const f = _getObjValueFromName(module, pc.function)
 	if (!f) {
 		const err = _playCallSyntaxErrorMsg(pc, 'function')
 		throw new SyntaxError(err)
