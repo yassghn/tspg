@@ -4,7 +4,7 @@
 
 import play from '../play/play'
 
-type playCallStr = {
+type callStr = {
 	toString: () => string
 	base: string
 	module: string
@@ -14,7 +14,7 @@ type playCallStr = {
 type playCallFunction = (...params: any) => any
 
 interface playCall {
-	call: playCallStr,
+	call: callStr,
 	fn: playCallFunction
 }
 
@@ -23,7 +23,7 @@ function _getPlayCallArray(call: string): string[] {
 	return playCallArray
 }
 
-function _playCallSyntaxErrorMsg(pc: playCallStr, name: string): string {
+function _playCallSyntaxErrorMsg(pc: callStr, name: string): string {
 	const msg = `invalid ${name} string from: ${pc.toString()}`
 	return msg
 }
@@ -34,31 +34,38 @@ function _getObjValueFromName(obj: object, name: string): playCallFunction {
 	return val
 }
 
-function _getPlayCallFunction(pc: playCallStr): any {
+function _getPlayCallFunction(pc: callStr): any {
+	const p = play()
+
+	const base = _getObjValueFromName(p, pc.base)
+	const module = _getObjValueFromName(base, pc.module)
+	const fn = _getObjValueFromName(module, pc.function)
+
+	return fn
+}
+
+function _isValidCallStr(pc: callStr): boolean {
 	const p = play()
 
 	const base = _getObjValueFromName(p, pc.base)
 	if (!base) {
-		const err = _playCallSyntaxErrorMsg(pc, 'base')
-		throw new SyntaxError(err)
+		return false
 	}
 
 	const module = _getObjValueFromName(base, pc.module)
 	if (!module) {
-		const err = _playCallSyntaxErrorMsg(pc, 'module')
-		throw new SyntaxError(err)
+		return false
 	}
 
-	const f = _getObjValueFromName(module, pc.function)
-	if (!f) {
-		const err = _playCallSyntaxErrorMsg(pc, 'function')
-		throw new SyntaxError(err)
+	const fn = _getObjValueFromName(module, pc.function)
+	if (!fn) {
+		return false
 	}
 
-	return f
+	return true
 }
 
-function _isValidPlayCall(pcA: string[]): boolean {
+function _isValidCallArray(pcA: string[]): boolean {
 	// check for any undefined
 	if (pcA.length > 0) {
 		for (let i = 0; i < pcA.length; i++) {
@@ -73,25 +80,34 @@ function _isValidPlayCall(pcA: string[]): boolean {
 	return false
 }
 
+function _hewPlayCallStr(pcA: string[]): callStr {
+	const pcStr: callStr = {
+		toString: () => { return `${pcA[0]}.${pcA[1]}.${pcA[2]}` },
+		base: pcA[0] ?? '',
+		module: pcA[1] ?? '',
+		function: pcA[2] ?? ''
+	}
+	return pcStr
+}
+
 function _hewPlayCall(call: string): playCall {
 	// get play call array
 	const pcA = _getPlayCallArray(call)
 	// verify call array
-	if (_isValidPlayCall(pcA)) {
-		// make playcallstr type
-		const pcStr: playCallStr = {
-			toString: () => { return `${pcA[0]}.${pcA[1]}.${pcA[2]}` },
-			base: pcA[0] ?? '',
-			module: pcA[1] ?? '',
-			function: pcA[2] ?? ''
+	if (_isValidCallArray(pcA)) {
+		const callStr = _hewPlayCallStr(pcA)
+		if (_isValidCallStr(callStr)) {
+			const fn = _getPlayCallFunction(callStr)
+			// make play call object
+			const pc: playCall = {
+				call: callStr,
+				fn: fn
+			}
+			// return playcall
+			return pc
+		} else {
+			throw new Error('invalid play call: ' + callStr.toString())
 		}
-		// make play call object
-		const pc: playCall = {
-			call: pcStr,
-			fn: _getPlayCallFunction(pcStr)
-		}
-		// return playcall
-		return pc
 	} else {
 		// err
 		throw new Error('invalid play call string: ' + call)
