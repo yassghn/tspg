@@ -11,6 +11,12 @@ import play from '../play/play'
 
 type CallFlowFn = (...params: any) => any
 
+type CallFlow = {
+	base: object
+	module: object
+	fn: CallFlowFn
+}
+
 function _getModuleBase(): object {
 	const base = play()
 	return base
@@ -22,14 +28,7 @@ function _getObjValueFromName(obj: object, name: string): CallFlowFn {
 	return val
 }
 
-function _callFlow(callFlowStr: string): any {
-	// make call
-
-	// get source (context)
-	const base = {
-		src: _getModuleBase(),
-		module: _getModuleBase()
-	}
+function _linkCallFlow(callFlowStr: string, callFlow: CallFlow) {
 	// build call chain array
 	const cfArray = callFlowStr.split('.')
 	if (cfArray) {
@@ -42,16 +41,42 @@ function _callFlow(callFlowStr: string): any {
 			// validate target
 			if (target) {
 				// get index from source object
-				base.module = _getObjValueFromName(base.module, target)
+				callFlow.module = _getObjValueFromName(callFlow.module, target)
 				//source = source[cfArray[i]]
 			}
 		}
 		// call function
 		if (fnName) {
-			const fn = _getObjValueFromName(base.module, fnName)
-			return fn()
+			const fn = _getObjValueFromName(callFlow.module, fnName)
+			callFlow.fn = fn
 		}
 	}
+}
+
+function _hewCallFlowContext(): CallFlow {
+	const callFlow: CallFlow = {
+		base: _getModuleBase(),
+		module: _getModuleBase(),
+		fn: () => {}
+	}
+	return callFlow
+}
+
+function _hewCallFlow(callFlowStr: string): CallFlow {
+	// hew call flow object
+	const callFlow = _hewCallFlowContext()
+	// link call flow function
+	_linkCallFlow(callFlowStr, callFlow)
+	// return
+	return callFlow
+}
+
+function _callFlow(callFlowStr: string): any {
+	// hew call flow object
+	const callFlow = _hewCallFlow(callFlowStr)
+	// run call
+	const ret = callFlow.fn()
+	return ret
 }
 
 function callFlow(callFlowStr: string): any {
