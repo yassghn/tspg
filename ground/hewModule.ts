@@ -4,7 +4,7 @@
 
 import error from 'error'
 
-function getObjValueFromName(obj: object, name: string): CallFlowFn {
+function getObjValueFromName(obj: object, name: string): any {
 	const index = Object.keys(obj).indexOf(name)
 	const val = Object.values(obj)[index]
 	return val
