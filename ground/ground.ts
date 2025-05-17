@@ -4,14 +4,20 @@
  * put things together from play
  */
 
-import runPlayCall from 'playCall'
+import runPlayCall from 'call'
 
-function _ground(call: string): any {
-	return runPlayCall(call)
+function _ground(srcCallStr: string): any {
+	try {
+		const ret = runPlayCall(srcCallStr)
+		return ret
+	} catch (e) {
+		// todo: error reporting
+		console.error(e)
+	}
 }
 
-function ground(call: string): any {
-	return _ground(call)
+function ground(srcCallStr: string): any {
+	return _ground(srcCallStr)
 }
 
 export default ground
