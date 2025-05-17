@@ -55,21 +55,26 @@ function _hewSrcCall(srcCallStr: string): SrcCall {
 }
 
 function _getCallFunction(srcCallStr: string): SrcCallFn {
+	// get source
 	const src = _getSrc()
+	// validate source
+	if (src) {
+		// get src call
+		const srcCall = _hewSrcCall(srcCallStr)
+		// validate src call
+		if (_isValidSrcCall(srcCall)) {
 
-	// get src call
-	const srcCall = _hewSrcCall(srcCallStr)
-	// validate src call
-	if (_isValidSrcCall(srcCall)) {
+			// iterate src call object to get call function
+			const base = _getObjValueFromName(src, srcCall.base)
+			const module = _getObjValueFromName(base, srcCall.module)
+			const fn = _getObjValueFromName(module, srcCall.function)
 
-		// iterate src call object to get call function
-		const base = _getObjValueFromName(src, srcCall.base)
-		const module = _getObjValueFromName(base, srcCall.module)
-		const fn = _getObjValueFromName(module, srcCall.function)
-
-		return fn
+			return fn
+		} else {
+			throw new SyntaxError(`invalid src call string: ${srcCall.toString()}`)
+		}
 	} else {
-		throw new SyntaxError(`invalid src call string: ${srcCall.toString()}`)
+		throw new Error('internal error, invalid src: ' + src)
 	}
 }
 
