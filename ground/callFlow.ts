@@ -43,15 +43,23 @@ function _getObjValueFromName(obj: object, name: string): CallFlowFn {
 	return val
 }
 
-function _moduleHewSyntaxErrMsg(callFlowStr: string, cfArray: string[], target: string): string {
-	const error = { msg: '' }
-	error.msg += 'invalid call flow: '
-	error.msg += `"${callFlowStr}"`
-	error.msg += ' '
-	error.msg += `<${cfArray.join('.')}>`
-	error.msg += ' '
-	error.msg += `->${target}<-`
-	return error.msg
+function _hewNextModule(callFlowStr: string, cfArray: string[], index: number, module: object): object {
+	// init return
+	const callFlow = { module: { ...module } }
+	// get target name from call chain array
+	const target = cfArray[index]
+	// validate target
+	if (target) {
+		// get index from source object
+		callFlow.module = _getObjValueFromName(callFlow.module, target)
+		// validate
+		if (!callFlow.module) {
+			const msg = errorMsg.syntax.hewModule(callFlowStr, cfArray, target)
+			throw new SyntaxError(msg)
+		}
+	}
+	// return module
+	return callFlow.module
 }
 
 function _hewModule(callFlowStr: string, cfArray: string[], module: object): object {
@@ -59,18 +67,7 @@ function _hewModule(callFlowStr: string, cfArray: string[], module: object): obj
 	const callFlow = { module: { ...module } }
 	// rebuild module object
 	for (let i = 0; i < cfArray.length; i++) {
-		// get target name from call chain array
-		const target = cfArray[i]
-		// validate target
-		if (target) {
-			// get index from source object
-			callFlow.module = _getObjValueFromName(callFlow.module, target)
-			// validate
-			if (!callFlow.module) {
-				const msg = _moduleHewSyntaxErrMsg(callFlowStr, cfArray, target)
-				throw new SyntaxError(msg)
-			}
-		}
+		callFlow.module = _hewNextModule(callFlowStr, cfArray, i, callFlow.module)
 	}
 	// return
 	return callFlow.module
