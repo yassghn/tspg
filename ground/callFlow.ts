@@ -17,6 +17,21 @@ type CallFlow = {
 	fn: CallFlowFn
 }
 
+const errorMsg = {
+	syntax: {
+		hewModule: (callFlowStr: string, cfArray: string[], target: string): string => {
+			const error = { msg: '' }
+			error.msg += 'invalid call flow: '
+			error.msg += `"${callFlowStr}"`
+			error.msg += ' '
+			error.msg += `<${cfArray.join('.')}>`
+			error.msg += ' '
+			error.msg += `->${target}<-`
+			return error.msg
+		}
+	}
+}
+
 function _getModuleBase(): object {
 	const base = play()
 	return base
