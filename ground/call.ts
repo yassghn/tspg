@@ -18,13 +18,18 @@ type SrcCall = {
 
 type SrcCallFn = (...params: any) => any
 
+function _getSrc(): object {
+	const src = play()
+	return src
+}
+
 function _hewCallStrArray(srcCallStr: string): string[] {
 	const callArray = srcCallStr.split('.')
 	return callArray
 }
 
-function _callSyntaxErrorMsg(pc: SrcCall, name: string): string {
-	const msg = `invalid ${name} string from: ${pc.toString()}`
+function _callSyntaxErrorMsg(srcCall: SrcCall, name: string): string {
+	const msg = `invalid ${name} string from: ${srcCall.toString()}`
 	return msg
 }
 
@@ -34,67 +39,37 @@ function _getObjValueFromName(obj: object, name: string): SrcCallFn {
 	return val
 }
 
-function _isValidCallArray(pcA: string[]): boolean {
-	// check for any undefined
-	if (pcA.length > 0) {
-		for (let i = 0; i < pcA.length; i++) {
-			if (!pcA[i]) {
-				return false
-			}
-		}
-		// valid play call
-		return true
-	}
-
-	return false
-}
-
-function _isValidCallStr(pc: SrcCall): boolean {
-	const p = play()
-
-	const base = _getObjValueFromName(p, pc.base)
-	if (!base) {
-		return false
-	}
-
-	const module = _getObjValueFromName(base, pc.module)
-	if (!module) {
-		return false
-	}
-
-	const fn = _getObjValueFromName(module, pc.function)
-	if (!fn) {
-		return false
-	}
-
+function _isValidSrcCall(srcCall: SrcCall): boolean {
 	return true
 }
 
 function _hewSrcCall(srcCallStr: string): SrcCall {
-	const pcA = _hewCallStrArray(srcCallStr)
+	const scA = _hewCallStrArray(srcCallStr)
 	const srcCall: SrcCall = {
-		toString: () => { return `${pcA[0]}.${pcA[1]}.${pcA[2]}` },
-		base: pcA[0] ?? '',
-		module: pcA[1] ?? '',
-		function: pcA[2] ?? ''
+		toString: () => { return `${scA[0]}.${scA[1]}.${scA[2]}` },
+		base: scA[0] ?? '',
+		module: scA[1] ?? '',
+		function: scA[2] ?? ''
 	}
 	return srcCall
 }
 
-function _getCallFunction(srcCallStr: string): any {
-	const p = play()
+function _getCallFunction(srcCallStr: string): SrcCallFn {
+	const src = _getSrc()
 
 	// get src call
 	const srcCall = _hewSrcCall(srcCallStr)
 	// validate src call
-	if (_isValidCallStr(srcCall)) {
+	if (_isValidSrcCall(srcCall)) {
 
 		// iterate src call object to get call function
-		const base = _getObjValueFromName(p, srcCall.base)
+		const base = _getObjValueFromName(src, srcCall.base)
 		const module = _getObjValueFromName(base, srcCall.module)
 		const fn = _getObjValueFromName(module, srcCall.function)
 
 		return fn
+	} else {
+		throw new SyntaxError(`invalid src call string: ${srcCall.toString()}`)
 	}
 }
 
