@@ -17,8 +17,31 @@ type CallFlow = {
 	fn: CallFlowFn
 }
 
+// error message
 const errorMsg = {
+	// syntax errors
 	syntax: {
+		//_linkCallFlow
+		linkCallFlow: (callFlowStr: string, fnName: string) => {
+			const error = { msg: '' }
+			error.msg += 'invalid function name'
+			error.msg += ' '
+			error.msg += `"${fnName}"`
+			error.msg += ' '
+			error.msg += 'from: '
+			error.msg += callFlowStr
+			return error.msg
+		},
+
+		//_hewCallFlowArray
+		hewCallFlowArray: (callFlowStr: string) => {
+			const error = { msg: '' }
+			error.msg += 'invalid call flow string from: '
+			error.msg += `"${callFlowStr}"`
+			return error.msg
+		},
+
+		//_hewModule
 		hewModule: (callFlowStr: string, cfArray: string[], target: string): string => {
 			const error = { msg: '' }
 			error.msg += 'invalid call flow: '
@@ -96,10 +119,8 @@ function _isValidCallFlowArray(cfArray: string[]): boolean {
 function _hewCallFlowArray(callFlowStr: string): string[] {
 	const cfArray = callFlowStr.split('.')
 	if (!_isValidCallFlowArray(cfArray)) {
-		const error = { msg: '' }
-		error.msg += 'invalid call flow string from: '
-		error.msg += `"${callFlowStr}"`
-		throw new SyntaxError(error.msg)
+		const msg = errorMsg.syntax.hewCallFlowArray(callFlowStr)
+		throw new SyntaxError(msg)
 	}
 	return cfArray
 }
@@ -118,14 +139,8 @@ function _linkCallFlow(callFlowStr: string, callFlow: CallFlow) {
 			if (fn) {
 				callFlow.fn = fn
 			} else {
-				const error = { msg: '' }
-				error.msg += 'invalid function name'
-				error.msg += ' '
-				error.msg += `"${fnName}"`
-				error.msg += ' '
-				error.msg += 'from: '
-				error.msg += callFlowStr
-				throw new Error(error.msg)
+				const msg = errorMsg.syntax.linkCallFlow(callFlowStr, fnName)
+				throw new SyntaxError(msg)
 			}
 		}
 	} else {
