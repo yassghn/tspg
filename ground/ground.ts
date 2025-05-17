@@ -10,9 +10,9 @@ function _ground(callFlowStr: string): any {
 	try {
 		const ret = callFlow(callFlowStr)
 		return ret
-	} catch (e) {
+	} catch (e: any) {
 		// todo: error reporting
-		console.error(e)
+		console.error(e.message)
 	}
 }
 
