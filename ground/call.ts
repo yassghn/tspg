@@ -2,6 +2,7 @@
  * playCall.ts
  */
 
+import { theBasics } from 'play/experimenotation/api/types'
 import play from '../play/play'
 
 /**
@@ -91,9 +92,35 @@ function _hewCall(srcCallStr: string): SrcCallFn {
 }
 
 function _runCall(srcCallStr: string): any {
+	// use the rest of this just to verify call
 	const fn = _hewCall(srcCallStr)
-	const ret = fn()
-	return ret
+
+	// make call
+
+	// get source (context)
+	let source = _getSrc()
+	// build call chain array
+	const callChainArray = srcCallStr.split('.')
+	if (callChainArray) {
+		// get function call from end of array
+		const func = callChainArray.pop()
+		// rebuild module object
+		for (let i = 0; i < callChainArray.length; i++) {
+			// get target name from call chain array
+			const target = callChainArray[i]
+			// validate target
+			if (target) {
+				// get index from source object
+				source = _getObjValueFromName(source, target)
+				//source = source[callChainArray[i]]
+			}
+		}
+		// call function
+		if (func) {
+			const fnx = _getObjValueFromName(source, func)
+			return fnx()
+		}
+	}
 }
 
 function runCall(srcCallStr: string): any {
