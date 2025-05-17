@@ -9,28 +9,11 @@ import play from '../play/play'
  * "play" "call"
  */
 
-type CallFlow = {
-	toString: () => string
-	base: string
-	module: string
-	function: string
-}
-
 type CallFlowFn = (...params: any) => any
 
-function _getSrc(): object {
-	const src = play()
-	return src
-}
-
-function _hewCallFlowArray(callFlowStr: string): string[] {
-	const cfArray = callFlowStr.split('.')
-	return cfArray
-}
-
-function _callSyntaxErrorMsg(callFlow: CallFlow, name: string): string {
-	const msg = `invalid ${name} string from: ${callFlow.toString()}`
-	return msg
+function _getModuleBase(): object {
+	const base = play()
+	return base
 }
 
 function _getObjValueFromName(obj: object, name: string): CallFlowFn {
@@ -39,70 +22,19 @@ function _getObjValueFromName(obj: object, name: string): CallFlowFn {
 	return val
 }
 
-function _isValidCallFlow(callFlow: CallFlow): boolean {
-	return true
-}
-
-function _hewCallFlow(callFlowStr: string): CallFlow {
-	const cfArray = _hewCallFlowArray(callFlowStr)
-	const callFlow: CallFlow = {
-		toString: () => { return `${cfArray[0]}.${cfArray[1]}.${cfArray[2]}` },
-		base: cfArray[0] ?? '',
-		module: cfArray[1] ?? '',
-		function: cfArray[2] ?? ''
-	}
-	return callFlow
-}
-
-function _getCallFlowFn(callFlowStr: string): CallFlowFn {
-	// get source
-	const src = _getSrc()
-	// validate source
-	if (src) {
-		// get src call
-		const callFlow = _hewCallFlow(callFlowStr)
-		// validate src call
-		if (_isValidCallFlow(callFlow)) {
-
-			// iterate src call object to get call function
-			// get base
-			const base = _getObjValueFromName(src, callFlow.base)
-			// validate base, throw error if necessary
-			// get module
-			const module = _getObjValueFromName(base, callFlow.module)
-			// validate module, throw error if necessary
-			// get call function
-			const fn = _getObjValueFromName(module, callFlow.function)
-			// validate call function, throw error if necessary
-			// return fn
-			return fn
-		} else {
-			throw new SyntaxError(`invalid src call string: ${callFlow.toString()}`)
-		}
-	} else {
-		throw new Error('internal error, invalid src: ' + src)
-	}
-}
-
-function _hewCall(callFlowStr: string): CallFlowFn {
-	const fn = _getCallFlowFn(callFlowStr)
-	// return call
-	return fn
-}
-
 function _callFlow(callFlowStr: string): any {
-	// use the rest of this just to verify call
-	const fn = _hewCall(callFlowStr)
-
 	// make call
 
 	// get source (context)
-	const module = { src: _getSrc() }
+	const base = {
+		src: _getModuleBase(),
+		module: _getModuleBase()
+	}
 	// build call chain array
-	const cfArray = _hewCallFlowArray(callFlowStr)
+	const cfArray = callFlowStr.split('.')
 	if (cfArray) {
-		// get function call from end of array
-		const func = cfArray.pop()
+		// get function name from end of array
+		const fnName = cfArray.pop()
 		// rebuild module object
 		for (let i = 0; i < cfArray.length; i++) {
 			// get target name from call chain array
@@ -110,15 +42,14 @@ function _callFlow(callFlowStr: string): any {
 			// validate target
 			if (target) {
 				// get index from source object
-				module.src = _getObjValueFromName(module.src, target)
+				base.module = _getObjValueFromName(base.module, target)
 				//source = source[cfArray[i]]
 			}
 		}
-		console.log(module)
 		// call function
-		if (func) {
-			const fnx = _getObjValueFromName(module.src, func)
-			return fnx()
+		if (fnName) {
+			const fn = _getObjValueFromName(base.module, fnName)
+			return fn()
 		}
 	}
 }
