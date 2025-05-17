@@ -23,7 +23,7 @@ function _getSrc(): object {
 	return src
 }
 
-function _hewCallStrArray(srcCallStr: string): string[] {
+function _hewCallChainArray(srcCallStr: string): string[] {
 	const callArray = srcCallStr.split('.')
 	return callArray
 }
@@ -44,7 +44,7 @@ function _isValidSrcCall(srcCall: SrcCall): boolean {
 }
 
 function _hewSrcCall(srcCallStr: string): SrcCall {
-	const scA = _hewCallStrArray(srcCallStr)
+	const scA = _hewCallChainArray(srcCallStr)
 	const srcCall: SrcCall = {
 		toString: () => { return `${scA[0]}.${scA[1]}.${scA[2]}` },
 		base: scA[0] ?? '',
@@ -99,7 +99,7 @@ function _runCall(srcCallStr: string): any {
 	// get source (context)
 	let source = _getSrc()
 	// build call chain array
-	const callChainArray = srcCallStr.split('.')
+	const callChainArray = _hewCallChainArray(srcCallStr)
 	if (callChainArray) {
 		// get function call from end of array
 		const func = callChainArray.pop()
