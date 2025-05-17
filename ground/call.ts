@@ -65,10 +65,16 @@ function _getCallFunction(srcCallStr: string): SrcCallFn {
 		if (_isValidSrcCall(srcCall)) {
 
 			// iterate src call object to get call function
+			// get base
 			const base = _getObjValueFromName(src, srcCall.base)
+			// validate base, throw error if necessary
+			// get module
 			const module = _getObjValueFromName(base, srcCall.module)
+			// validate module, throw error if necessary
+			// get call function
 			const fn = _getObjValueFromName(module, srcCall.function)
-
+			// validate call function, throw error if necessary
+			// return fn
 			return fn
 		} else {
 			throw new SyntaxError(`invalid src call string: ${srcCall.toString()}`)
