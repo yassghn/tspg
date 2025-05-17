@@ -3,6 +3,7 @@
  */
 
 import play from '../play/play'
+import error from 'error'
 
 /**
  * in the scope of the playground project, the source of calls is "play/" directory
@@ -15,47 +16,6 @@ type CallFlow = {
 	base: object
 	module: object
 	fn: CallFlowFn
-}
-
-// error message
-const errorMsg = {
-	// syntax errors
-	syntax: {
-		//_linkCallFlow
-		linkCallFlow: (callFlowStr: string, fnName: string) => {
-			const error = { msg: '' }
-			error.msg += 'invalid function name'
-			error.msg += ' '
-			error.msg += `"${fnName}"`
-			error.msg += ' '
-			error.msg += 'from:'
-			error.msg += ' '
-			error.msg += callFlowStr
-			return error.msg
-		},
-
-		//_hewCallFlowArray
-		hewCallFlowArray: (callFlowStr: string) => {
-			const error = { msg: '' }
-			error.msg += 'invalid call flow string from:'
-			error.msg += ' '
-			error.msg += `"${callFlowStr}"`
-			return error.msg
-		},
-
-		//_hewModule
-		hewModule: (callFlowStr: string, cfArray: string[], target: string): string => {
-			const error = { msg: '' }
-			error.msg += 'invalid call flow:'
-			error.msg += ' '
-			error.msg += `"${callFlowStr}"`
-			error.msg += ' '
-			error.msg += `<${cfArray.join('.')}>`
-			error.msg += ' '
-			error.msg += `->${target}<-`
-			return error.msg
-		}
-	}
 }
 
 function _getModuleBase(): object {
@@ -80,7 +40,7 @@ function _hewNextModule(callFlowStr: string, cfArray: string[], index: number, m
 		callFlow.module = _getObjValueFromName(callFlow.module, target)
 		// validate
 		if (!callFlow.module) {
-			const msg = errorMsg.syntax.hewModule(callFlowStr, cfArray, target)
+			const msg = error.msg.syntax.hewModule(callFlowStr, cfArray, target)
 			throw new SyntaxError(msg)
 		}
 	}
@@ -122,7 +82,7 @@ function _isValidCallFlowArray(cfArray: string[]): boolean {
 function _hewCallFlowArray(callFlowStr: string): string[] {
 	const cfArray = callFlowStr.split('.')
 	if (!_isValidCallFlowArray(cfArray)) {
-		const msg = errorMsg.syntax.hewCallFlowArray(callFlowStr)
+		const msg = error.msg.syntax.hewCallFlowArray(callFlowStr)
 		throw new SyntaxError(msg)
 	}
 	return cfArray
@@ -142,7 +102,7 @@ function _linkCallFlow(callFlowStr: string, callFlow: CallFlow) {
 			if (fn) {
 				callFlow.fn = fn
 			} else {
-				const msg = errorMsg.syntax.linkCallFlow(callFlowStr, fnName)
+				const msg = error.msg.syntax.linkCallFlow(callFlowStr, fnName)
 				throw new SyntaxError(msg)
 			}
 		}
