@@ -1,5 +1,5 @@
 {
-    "include": ["pg/ground/**/*", "pg/play/**/*", "./index.ts"],
+    "include": ["pg/play/**/*", "pg/ground/**/*", "pg/mutual/**/*", "./index.ts"],
 
     "compilerOptions": {
         // environment setup & latest features
@@ -32,7 +32,7 @@
         "noImplicitThis": true,
         "baseUrl": "./",
         "paths": {
-            "*": ["pg/ground/*", "pg/play/*"]
+            "*": ["pg/ground/*", "pg/play/*", "pg/mutual/*"]
         }
     },
 

@@ -2,7 +2,7 @@
  * callFlow.ts
  */
 
-import play from '../play/play'
+import play from 'play'
 import hewModule, { getObjValueFromName } from 'hewModule'
 import error from 'error'
 

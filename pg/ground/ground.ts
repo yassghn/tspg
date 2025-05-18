@@ -4,7 +4,7 @@
  * put things together from play
  */
 
-import io from '../mutual/io'
+import io from 'io'
 
 import callFlow from 'callFlow'
 
