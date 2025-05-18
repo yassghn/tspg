@@ -4,6 +4,8 @@
  * put things together from play
  */
 
+import io from '../mutual/io'
+
 import callFlow from 'callFlow'
 
 function _ground(callFlowStr: string): any {
@@ -11,8 +13,7 @@ function _ground(callFlowStr: string): any {
 		const ret = callFlow(callFlowStr)
 		return ret
 	} catch (e: any) {
-		// todo: error reporting
-		console.error(e.message)
+		io.std.err(e.message)
 	}
 }
 
