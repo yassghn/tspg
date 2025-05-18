@@ -29,15 +29,26 @@ async function _hewEmitter():Promise<Emitter> {
 	return emitter
 }
 
-async function _writeStd(msg: string, stdLvl: number) {
+async function _applyEmitter(lambda: (...params: any) => {}, ...params: any) {
+	// get emitter
+	const emitter = await _hewEmitter()
+	// update msg string with emitter values
+	const lastIndex = params.length - 1
+	const error = { msg: params[lastIndex] }
+	error.msg = `${emitter.set}${error.msg}${emitter.reset}`
+	params[lastIndex] = error.msg
+	// run lambda
+	lambda(...params)
+}
+
+function _writeStd(msg: string, stdLvl: number) {
 	switch (stdLvl) {
 		case STDLVL.IN:
 			break;
 		case STDLVL.OUT:
 			break;
 		case STDLVL.ERR:
-			const e = await _hewEmitter()
-			Bun.write(Bun.stderr, e.set + msg + e.reset)
+			_applyEmitter(Bun.write, Bun.stderr, msg)
 			break;
 	}
 }
