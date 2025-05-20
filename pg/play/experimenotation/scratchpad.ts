@@ -3,9 +3,11 @@
  */
 
 import * as experimental from './scratchpad/experimental'
+import * as mutex from './scratchpad/mutex'
 
 const scratchpad = {
-	experimental: experimental
+	experimental: experimental,
+	mutex: mutex
 }
 
 export default scratchpad
