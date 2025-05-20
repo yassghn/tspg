@@ -5,9 +5,11 @@
  */
 
 import * as types from './api/types.ts'
+import * as objects from './api/objects.ts'
 
 const api = {
-	types: types
+	types: types,
+	objects: objects
 }
 
 export default api
