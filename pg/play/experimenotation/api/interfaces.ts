@@ -5,20 +5,26 @@
 function callable() {
 	console.log('callable objects')
 
-	// create callable interface
-	interface CALLABLE {
-		(...params: any[]): any
+	type FNPROPS = {
+		props: any[]
+		fn: (...args: any) => any
 	}
 
-	// extend on class
-	const lambda: CALLABLE = function(...params: any) {
-		const fn = params.shift()
-		return fn(...params)
+	interface FP extends FNPROPS {
+		(...params: any): any
 	}
 
-	const add = (a: number, b: number) => a + b
+	const lambda: FP = function (...params: any) {
+		const l = params.shift()
+		return l(...params)
+	}
+	lambda.props = [1, 2, 3, 4, 5]
+	lambda.fn = (a: number, b: number) => lambda.props.reduce((sum: number, val: number) => sum + val, 0) + a + b
 
-	console.log(lambda(add, 5, 6))
+	lambda.props.push(6)
+	const ret = lambda(lambda.fn, 10, 20)
+
+	console.log(`ret: ${ret}`)
 }
 
 export { callable }
