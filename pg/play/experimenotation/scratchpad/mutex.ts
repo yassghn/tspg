@@ -194,7 +194,7 @@ function simple2() {
 	/**
 	 * concurrency problem setup
 	 *
-	 * adddown will "accidentally" run first
+	 * not guaranteed which function, addup or addown, will run first
 	 */
 	setTimeout(() => {
 		addUp()
