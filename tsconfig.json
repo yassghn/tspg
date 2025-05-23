@@ -30,10 +30,10 @@
         "outDir": "./dist",
         "noImplicitReturns": true,
         "noImplicitThis": true,
+        "alwaysStrict": true,
         "baseUrl": "./",
-        "paths": {
-            "*": ["pg/ground/*", "pg/play/*", "pg/mutual/*"]
-        }
+        "paths": {},
+        "types": ["bun", "node"]
     },
 
     "watchOptions": {
