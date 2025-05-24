@@ -11,11 +11,11 @@
     "@types/bun": "latest",
     "@types/node": "^22.15.21",
     "@typescript-eslint/parser": "^8.32.1",
-    "eslint": "^9.26.0",
+    "eslint": "^9.27.0",
     "prettier": "^3.5.3",
     "prettier-eslint": "^16.4.2"
   },
   "peerDependencies": {
-    "typescript": "^5"
+    "typescript": "^5.8.3"
   }
 }
