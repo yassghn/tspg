@@ -2,16 +2,16 @@
  * eslint.config.ts
  */
 
-import { defineConfig, globalIgnores } from "eslint/config";
+import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
     globalIgnores([]),
 	{
-        files: ["pg/**/*.ts"],
+        files: ['pg/**/*.ts'],
         ignores: [],
 		rules: {
-			semi: "error",
-			"prefer-const": "error",
-		},
-	},
-]);
+			semi: 'error',
+			'prefer-const': 'error'
+		}
+	}
+])
