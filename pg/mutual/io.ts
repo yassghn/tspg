@@ -16,7 +16,7 @@ const colors = {
     default: 'default'
 }
 
-function _stdTypeColorInfer(stdLvl: STDLVL): ForegroundColors {
+function _stdTypeColorInfer(stdLvl: STDLVL): any {
     // init return
     const infer = { color: '' }
     // infer color based on STDLVL
